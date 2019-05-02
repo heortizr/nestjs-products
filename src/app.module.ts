@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 import { Module } from '@nestjs/common';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -10,7 +12,7 @@ import { LoggingInterceptor } from './shared/logging.interceptor';
   imports: [
     ProductModule,
     MongooseModule.forRoot(
-      'mongo-url',
+      process.env.MONGODB,
       { useNewUrlParser: true },
     ),
   ],
