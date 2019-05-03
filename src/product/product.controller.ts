@@ -42,7 +42,10 @@ export class ProductController {
     @Res() res: Response
   ) {
     const products = await this.productService.getProducts();
-    return res.status(HttpStatus.OK).json(products);
+
+    return res
+      .status(HttpStatus.OK)
+      .json(products);
   }
 
   @Get(':id')
@@ -52,11 +55,9 @@ export class ProductController {
   ) {
     const product = await this.productService.getProduct(id);
 
-    if (!product) {
-      throw new NotFoundException('Product not found');
-    }
-
-    return res.status(HttpStatus.OK).json(product);
+    return res
+      .status(HttpStatus.OK)
+      .json(product);
   }
 
   @Delete(':id')
@@ -66,9 +67,14 @@ export class ProductController {
     @User('id') userId: string,
     @Param('id') productId: string,
   ) {
+    const product = await this.productService.deleteProduct(
+      userId,
+      productId
+    );
+
     return res
       .status(HttpStatus.OK)
-      .json(await this.productService.deleteProduct(userId, productId));
+      .json(product);
   }
 
   @Put(':id')
@@ -80,13 +86,14 @@ export class ProductController {
     @Param('id') productId: string,
     @Body() productDto: Partial<ProductDto>,
   ) {
-    productDto.userId = userId;
-    const product = await this.productService.updateProduct(productId, productDto);
+    const product = await this.productService.updateProduct(
+      userId,
+      productId,
+      productDto
+    );
 
-    if (!product) {
-      throw new NotFoundException('Product no found');
-    }
-
-    return res.status(HttpStatus.OK).json(product);
+    return res
+      .status(HttpStatus.OK)
+      .json(product);
   }
 }

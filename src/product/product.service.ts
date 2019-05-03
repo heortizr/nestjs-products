@@ -6,6 +6,7 @@ import { ProductDto } from './dto/product.dto';
 
 @Injectable()
 export class ProductService {
+
   constructor(
     @InjectModel('product')
     private readonly productModel: Model<Product>,
@@ -16,7 +17,10 @@ export class ProductService {
   }
 
   async getProduct(id: string): Promise<Product> {
-    return await this.productModel.findById(id);
+    const product = await this.productModel.findById(id);
+
+    if (!product) throw new NotFoundException('Product not found');
+    return product;
   }
 
   async createProduct(
@@ -32,16 +36,31 @@ export class ProductService {
       userId,
     });
 
+    // I could be more specific with the error, I mean really do not exists
+    // or it is a forbidden resource for autenticated user
+    // whatever it is just a simple example
     if (!product) throw new NotFoundException('Product not found');
     return product;
   }
 
   async updateProduct(
-    id: string,
-    product: Partial<ProductDto>,
+    userId: string,
+    productId: string,
+    productDto: Partial<ProductDto>,
   ): Promise<Product> {
-    return await this.productModel.findByIdAndUpdate(id, product, {
-      new: true,
-    });
+    const product = await this.productModel.findOneAndUpdate(
+      {
+        id: productId,
+        userId,
+      },
+      productDto,
+      { new: true }
+    );
+
+    // I could be more specific with the error, I mean really do not exists
+    // or it is a forbidden resource for autenticated user
+    // whatever it is just a simple example
+    if (!product) throw new NotFoundException('Product no found');
+    return product;
   }
 }
