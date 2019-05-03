@@ -8,6 +8,7 @@ export const productSchema = new Schema({
   description: String,
   imageURL: String,
   price: Number,
+  userId: String,
   createdAt: {
     type: Date,
     default: Date.now,

@@ -3,10 +3,10 @@ import 'dotenv/config';
 import { Module } from '@nestjs/common';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
-
 import { ProductModule } from './product/product.module';
 import { HttpErrorFilter } from './shared/http-error.filter';
 import { LoggingInterceptor } from './shared/logging.interceptor';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -15,6 +15,7 @@ import { LoggingInterceptor } from './shared/logging.interceptor';
       process.env.MONGODB,
       { useNewUrlParser: true },
     ),
+    UserModule,
   ],
   controllers: [],
   providers: [

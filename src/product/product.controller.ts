@@ -10,22 +10,29 @@ import {
   Delete,
   Put,
   UsePipes,
+  UseGuards,
+  ForbiddenException,
 } from '@nestjs/common';
-import { CreateProductDto } from './dto/product.dto';
+import { ProductDto } from './dto/product.dto';
 import { ProductService } from './product.service';
 import { Response } from 'express';
 import { ValidationPipe } from 'src/shared/validation.pipe';
+import { AuthGuard } from 'src/shared/auth.guard';
+import { User } from 'src/user/user.decorator';
 
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post()
+  @UseGuards(AuthGuard)
   @UsePipes(ValidationPipe)
   async createProduct(
     @Res() res: Response,
-    @Body() productDto: Partial<CreateProductDto>,
+    @User('id') userId: string,
+    @Body() productDto: Partial<ProductDto>,
   ) {
+    productDto.userId = userId;
     const product = await this.productService.createProduct(productDto);
     return res.status(HttpStatus.OK).json(product);
   }
@@ -53,27 +60,28 @@ export class ProductController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard)
   async deleteProduct(
-    @Param('id') id: string,
-    @Res() res: Response
+    @Res() res: Response,
+    @User('id') userId: string,
+    @Param('id') productId: string,
   ) {
-    const product = await this.productService.deleteProduct(id);
-
-    if (!product) {
-      throw new NotFoundException('Product not found');
-    }
-
-    return res.status(HttpStatus.OK).json(product);
+    return res
+      .status(HttpStatus.OK)
+      .json(await this.productService.deleteProduct(userId, productId));
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard)
   @UsePipes(ValidationPipe)
   async updateProduct(
     @Res() res: Response,
-    @Param('id') id: string,
-    @Body() productDto: Partial<CreateProductDto>,
+    @User('id') userId: string,
+    @Param('id') productId: string,
+    @Body() productDto: Partial<ProductDto>,
   ) {
-    const product = await this.productService.updateProduct(id, productDto);
+    productDto.userId = userId;
+    const product = await this.productService.updateProduct(productId, productDto);
 
     if (!product) {
       throw new NotFoundException('Product no found');
