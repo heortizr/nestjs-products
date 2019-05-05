@@ -1,4 +1,4 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty } from 'class-validator';
 
 export class UserDto {
     @IsNotEmpty()
@@ -6,10 +6,4 @@ export class UserDto {
 
     @IsNotEmpty()
     password: string;
-};
-
-export class UserRO {
-    id: string;
-    username: string;
-    token: string;
 }

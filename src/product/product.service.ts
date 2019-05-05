@@ -19,7 +19,7 @@ export class ProductService {
   async getProduct(id: string): Promise<Product> {
     const product = await this.productModel.findById(id);
 
-    if (!product) throw new NotFoundException('Product not found');
+    if (!product) { throw new NotFoundException('Product not found'); }
     return product;
   }
 
@@ -39,7 +39,7 @@ export class ProductService {
     // I could be more specific with the error, I mean really do not exists
     // or it is a forbidden resource for autenticated user
     // whatever it is just a simple example
-    if (!product) throw new NotFoundException('Product not found');
+    if (!product) { throw new NotFoundException('Product not found'); }
     return product;
   }
 
@@ -54,13 +54,13 @@ export class ProductService {
         userId,
       },
       productDto,
-      { new: true }
+      { new: true },
     );
 
     // I could be more specific with the error, I mean really do not exists
     // or it is a forbidden resource for autenticated user
     // whatever it is just a simple example
-    if (!product) throw new NotFoundException('Product no found');
+    if (!product) { throw new NotFoundException('Product no found'); }
     return product;
   }
 }

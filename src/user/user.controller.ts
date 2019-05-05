@@ -5,13 +5,13 @@ import { UserDto } from './dto/user.dto';
 @Controller('user')
 export class UserController {
     constructor(
-        private userService: UserService
+        private userService: UserService,
     ) {}
 
     @Post()
     registerUser(
         @Body()
-        userDto: UserDto
+        userDto: UserDto,
     ) {
         return this.userService.register(userDto);
     }
@@ -19,7 +19,7 @@ export class UserController {
     @Post('/login')
     loginUser(
         @Body()
-        userDto: UserDto
+        userDto: UserDto,
     ) {
         return this.userService.login(userDto);
     }
@@ -32,7 +32,7 @@ export class UserController {
     @Get(':id')
     getUser(
         @Param('id')
-        id: string
+        id: string,
     ) {
         return this.userService.getUser(id);
     }
@@ -40,7 +40,7 @@ export class UserController {
     @Delete(':id')
     deleteUser(
         @Param('id')
-        id: string
+        id: string,
     ) {
         return this.userService.deleteUser(id);
     }

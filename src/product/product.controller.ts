@@ -27,19 +27,22 @@ export class ProductController {
   @Post()
   @UseGuards(AuthGuard)
   @UsePipes(ValidationPipe)
-  async createProduct(
+  async create(
     @Res() res: Response,
     @User('id') userId: string,
     @Body() productDto: Partial<ProductDto>,
   ) {
     productDto.userId = userId;
     const product = await this.productService.createProduct(productDto);
-    return res.status(HttpStatus.OK).json(product);
+
+    return res
+      .status(HttpStatus.OK)
+      .json(product);
   }
 
   @Get()
-  async getProducts(
-    @Res() res: Response
+  async getAll(
+    @Res() res: Response,
   ) {
     const products = await this.productService.getProducts();
 
@@ -49,9 +52,9 @@ export class ProductController {
   }
 
   @Get(':id')
-  async getProduct(
+  async getOne(
     @Res() res: Response,
-    @Param('id') id: string
+    @Param('id') id: string,
   ) {
     const product = await this.productService.getProduct(id);
 
@@ -69,7 +72,7 @@ export class ProductController {
   ) {
     const product = await this.productService.deleteProduct(
       userId,
-      productId
+      productId,
     );
 
     return res
@@ -89,7 +92,7 @@ export class ProductController {
     const product = await this.productService.updateProduct(
       userId,
       productId,
-      productDto
+      productDto,
     );
 
     return res

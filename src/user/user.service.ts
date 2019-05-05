@@ -2,25 +2,28 @@ import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './interface/user.interface';
-import { UserDto, UserRO } from './dto/user.dto';
+import { UserDto } from './dto/user.dto';
 
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
+import { UserRO } from './dto/user.ro';
 
 @Injectable()
 export class UserService {
 
     constructor(
         @InjectModel('user')
-        private readonly userModel: Model<User>
+        private readonly userModel: Model<User>,
     ) {}
 
     async register(
-        userDto: UserDto
+        userDto: UserDto,
     ): Promise<User> {
         const { username } = userDto;
-        let user = await this.userModel.findOne({ username });
-        if (user) throw new BadRequestException('User already exists');
+        const user = await this.userModel.findOne({ username });
+        if (user) {
+            throw new BadRequestException('User already exists');
+        }
 
         userDto.password = await this.hashPassword(userDto.password);
         const newUser = new this.userModel(userDto);
@@ -28,7 +31,7 @@ export class UserService {
     }
 
     async login(
-        userDto: UserDto
+        userDto: UserDto,
     ) {
         const { username, password } = userDto;
 
@@ -36,7 +39,7 @@ export class UserService {
         if (!user || !await bcrypt.compare(password, user.password)) {
             throw new BadRequestException('Invalid username/password');
         }
-        
+
         const userRO = new UserRO();
         userRO.id = user.id;
         userRO.username = user.username;
@@ -59,12 +62,12 @@ export class UserService {
 
     async updateUser(
         id: string,
-        userDto: UserDto
+        userDto: UserDto,
     ): Promise<User> {
         return await this.userModel.findOneAndUpdate(
             id,
             userDto,
-            { new: true }
+            { new: true },
         );
     }
 
