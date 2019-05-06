@@ -1,0 +1,10 @@
+type User {
+  id: ID!
+  username: String!
+  createdAt: String!
+  products: [Product!]
+}
+
+type Query {
+  users: [User!]
+}

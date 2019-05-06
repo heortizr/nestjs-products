@@ -63,6 +63,18 @@ export class ProductController {
       .json(product);
   }
 
+  @Get('/user/:id')
+  async getByUser(
+    @Res() res: Response,
+    @Param('id') id: string,
+  ) {
+    const product = await this.productService.getProductByUser(id);
+
+    return res
+      .status(HttpStatus.OK)
+      .json(product);
+  }
+
   @Delete(':id')
   @UseGuards(AuthGuard)
   async deleteProduct(

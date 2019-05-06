@@ -44,7 +44,6 @@ export class UserService {
         userRO.id = user.id;
         userRO.username = user.username;
         userRO.token = await this.token(user.id, user.username);
-        Logger.debug(userRO);
         return userRO;
     }
 
